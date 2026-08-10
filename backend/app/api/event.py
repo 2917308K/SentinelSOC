@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.detection.engine import process_event
 from app.models.event import Event
 from app.schemas.event import EventCreate, EventResponse
 
@@ -34,5 +35,10 @@ def create_event(
     db.add(db_event)
     db.commit()
     db.refresh(db_event)
+
+    process_event(
+        db=db,
+        event=db_event,
+    )
 
     return db_event

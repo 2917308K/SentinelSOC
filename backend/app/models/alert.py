@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database import Base
 
 
-class Event(Base):
-    __tablename__ = "events"
+class Alert(Base):
+    __tablename__ = "alerts"
 
     id: Mapped[int] = mapped_column(
         Integer,
@@ -15,7 +15,12 @@ class Event(Base):
         autoincrement=True,
     )
 
-    event_type: Mapped[str] = mapped_column(
+    rule_id: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+    )
+
+    alert_type: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
     )
@@ -23,7 +28,11 @@ class Event(Base):
     severity: Mapped[str] = mapped_column(
         String(20),
         nullable=False,
-        default="LOW",
+    )
+
+    risk_score: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
     )
 
     source: Mapped[str] = mapped_column(
@@ -36,17 +45,24 @@ class Event(Base):
         nullable=False,
     )
 
-    username: Mapped[str | None] = mapped_column(
-        String(255),
-        nullable=True,
-    )
-
     description: Mapped[str] = mapped_column(
         Text,
         nullable=False,
     )
 
-    timestamp: Mapped[datetime] = mapped_column(
+    status: Mapped[str] = mapped_column(
+        String(30),
+        nullable=False,
+        default="OPEN",
+    )
+
+    event_count: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=1,
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
