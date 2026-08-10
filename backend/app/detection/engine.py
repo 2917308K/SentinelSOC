@@ -7,6 +7,27 @@ from app.models.alert import Alert
 from app.models.event import Event
 
 
+def get_related_events(
+    db: Session,
+    event: Event,
+    event_count: int,
+) -> list[Event]:
+ 
+    statement = (
+        select(Event)
+        .where(
+            Event.source == event.source,
+            Event.hostname == event.hostname,
+            Event.event_type == event.event_type,
+            Event.timestamp <= event.timestamp,
+        )
+        .order_by(Event.timestamp.desc())
+        .limit(event_count)
+    )
+
+    return list(db.scalars(statement).all())
+
+
 def process_event(
     db: Session,
     event: Event,
@@ -38,6 +59,12 @@ def process_event(
         else:
             severity = "LOW"
 
+        related_events = get_related_events(
+            db=db,
+            event=event,
+            event_count=detection["event_count"],
+        )
+
         existing_alert = db.scalar(
             select(Alert)
             .where(
@@ -56,6 +83,10 @@ def process_event(
             existing_alert.severity = severity
             existing_alert.description = detection["description"]
 
+            for related_event in related_events:
+                if related_event not in existing_alert.events:
+                    existing_alert.events.append(related_event)
+
             alerts.append(existing_alert)
 
         else:
@@ -71,7 +102,10 @@ def process_event(
                 event_count=detection["event_count"],
             )
 
+            alert.events.extend(related_events)
+
             db.add(alert)
+
             alerts.append(alert)
 
     if alerts:

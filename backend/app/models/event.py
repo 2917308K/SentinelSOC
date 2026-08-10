@@ -1,10 +1,9 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-
 
 class Event(Base):
     __tablename__ = "events"
@@ -50,4 +49,10 @@ class Event(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
+    )
+    
+    alerts = relationship(
+        "Alert",
+        secondary="alert_events",
+        back_populates="events",
     )

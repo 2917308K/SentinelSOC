@@ -1,8 +1,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
-
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 
@@ -66,4 +65,16 @@ class Alert(Base):
         DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
+    )
+
+    events = relationship(
+        "Event",
+        secondary="alert_events",
+        back_populates="alerts",
+    )
+
+    incidents = relationship(
+        "Incident",
+        secondary="incident_alerts",
+        back_populates="alerts",
     )
