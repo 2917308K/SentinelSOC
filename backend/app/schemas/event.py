@@ -11,6 +11,7 @@ class EventCreate(BaseModel):
     username: str | None = None
     description: str
     timestamp: datetime | None = None
+    data: dict | None = None
 
 
 class EventResponse(BaseModel):
@@ -22,5 +23,5 @@ class EventResponse(BaseModel):
     username: str | None
     description: str
     timestamp: datetime
-
+    data: dict | None = None
     model_config = ConfigDict(from_attributes=True)

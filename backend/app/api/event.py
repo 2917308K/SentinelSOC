@@ -30,6 +30,7 @@ def create_event(
         username=event.username,
         description=event.description,
         timestamp=event.timestamp,
+        data=event.data,
     )
 
     db.add(db_event)

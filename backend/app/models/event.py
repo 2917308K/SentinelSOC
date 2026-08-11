@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
+from sqlalchemy import JSON
 from app.core.database import Base
 
 class Event(Base):
@@ -50,9 +50,14 @@ class Event(Base):
         nullable=False,
         default=lambda: datetime.now(timezone.utc),
     )
-    
+
     alerts = relationship(
         "Alert",
         secondary="alert_events",
         back_populates="events",
+    )
+
+    data: Mapped[dict | None] = mapped_column(
+        JSON,
+        nullable=True,
     )
