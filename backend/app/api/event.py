@@ -5,7 +5,7 @@ from app.core.database import get_db
 from app.detection.engine import process_event
 from app.models.event import Event
 from app.schemas.event import EventCreate, EventResponse
-
+from app.core.security import verify_agent_api_key
 
 router = APIRouter(
     prefix="/events",
@@ -16,8 +16,10 @@ router = APIRouter(
 @router.post(
     "/",
     response_model=EventResponse,
-    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(verify_agent_api_key)],
 )
+
+
 def create_event(
     event: EventCreate,
     db: Session = Depends(get_db),

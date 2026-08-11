@@ -10,7 +10,8 @@ from app.schemas.endpoint import (
     EndpointRegister,
     EndpointResponse,
 )
-
+from fastapi import APIRouter, Depends
+from app.core.security import verify_agent_api_key
 
 router = APIRouter(
     prefix="/endpoints",
@@ -21,7 +22,10 @@ router = APIRouter(
 @router.post(
     "/register",
     response_model=EndpointResponse,
+    dependencies=[Depends(verify_agent_api_key)],
 )
+
+
 def register_endpoint(
     endpoint: EndpointRegister,
     db: Session = Depends(get_db),
