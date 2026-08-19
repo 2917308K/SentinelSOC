@@ -2,13 +2,7 @@ import psutil
 
 
 def collect_processes() -> list[dict]:
-    """
-    Collect information about currently running processes.
-
-    Process information can become unavailable between collection
-    attempts, so inaccessible or terminated processes are skipped.
-    """
-
+    
     processes = []
 
     for process in psutil.process_iter(

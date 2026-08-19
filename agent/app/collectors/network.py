@@ -2,14 +2,7 @@ import psutil
 
 
 def collect_network_connections() -> list[dict]:
-    """
-    Collect active network connections.
-
-    macOS may restrict access to some process/network information.
-    The collector therefore handles permission errors gracefully
-    instead of crashing the entire agent.
-    """
-
+    
     connections = []
 
     try:

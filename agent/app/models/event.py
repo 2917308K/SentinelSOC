@@ -8,12 +8,12 @@ def create_event(
     source: str,
     description: str,
     data: dict,
+    severity: str = "INFO",
 ) -> dict:
-    
-
+   
     return {
         "event_type": event_type,
-        "severity": "INFO",
+        "severity": severity,
         "source": source,
         "hostname": hostname,
         "username": None,

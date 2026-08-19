@@ -60,3 +60,27 @@ class SentinelAPIClient:
             )
 
             return False
+
+    def send_events(self, events: list[dict]) -> bool:
+
+        if not events:
+            return True
+
+        try:
+            response = requests.post(
+                f"{self.base_url}/events/batch",
+                json=events,
+                headers=self.headers,
+                timeout=10,
+            )
+
+            response.raise_for_status()
+
+            return True
+
+        except requests.RequestException as exc:
+            print(
+                f"Failed to send event batch to SentinelSOC: {exc}"
+            )
+
+            return False
